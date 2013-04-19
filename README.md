@@ -1,12 +1,12 @@
 # Game - Programming Assignments Private Repository
 ### Student Information
-  + Name: Tommy Trojan
-  + USC Email: ttrojan@usc.edu
-  + USC ID: 0123456789
+  + Name: Yixin Cai
+  + USC Email: yixincai@usc.edu
+  + USC ID: 9737754008
 
 ### Game Information
-  + Game Name: myAwsomeGame
-  + Game Description: One sentence game description
+  + Game Name: Survive the Tomb
+  + Game Description: This is an advanture game where players need to survive and kill monsters. 
   + [Game Design Doc](GameDesignDoc.md)
 
 
