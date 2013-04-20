@@ -27,9 +27,11 @@ Things that appear on the screen:
   ![alt text](bullet.jpg  "bullet")
 
 ### Player control
+
 #### Keyboard
   1. left arrow, right arrow, up arrow, down arrow: control the user to move up/down/left/right
   2. key w,a,s,d: shoot bullets to up, left, down and right respectively.
+  
 #### Mouse
   click start, pause, quit buttons and buy lifes
 
