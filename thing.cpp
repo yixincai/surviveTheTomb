@@ -6,16 +6,18 @@ Thing::Thing() {
     y = 0;
     velocityX = 0;
     velocityY = 0;
+    hp=0;
 }
 
-Thing::Thing(QPixmap *pm, int x, int y, int vx, int vy ) {
+Thing::Thing(QPixmap *pm, int nx, int ny, int vx, int vy ) {
     pic = pm;
-    setPixmap(*pic);
+    QGraphicsPixmapItem::setPixmap(*pic);
     x = nx;
     y = ny;
     setPos(x,y);
     velocityX = vx;
     velocityY = vy;
+    hp=0;
 }
 
 int Thing::getVelocityX() {
@@ -52,4 +54,11 @@ void Thing::setY(int ny) {
 
 void Thing::setPixmap(QPixmap* pm){
     pic=pm;
+}
+
+void Thing::loseHP(){
+}
+
+int Thing::getHP(){
+	return hp;
 }

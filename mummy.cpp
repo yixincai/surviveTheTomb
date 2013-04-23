@@ -1,40 +1,34 @@
 #include "mummy.h"
 
-Mummy::Mummy(QPixmap *pm, int x, int y, int vx, int vy, bool v_d) : Thing(QPixmap *pm, int x, int y, int vx, int vy ) {
-	vertical_direc = v_d;
+Mummy::Mummy(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, vy ) {
 	hp=3;
 }
 
-Mummy::move(int MaxX, int MaxY){
-    if (vertical_direc)	
+void Mummy::move(int MaxX, int MaxY){
     	y += velocityY;
-    else    
     	x += velocityX;
 
-    if ( x < 0 ) {
+    if ( x-30 < 0 ) {
         velocityX = -velocityX;
         x +=velocityX;
     }
 
-    if ( y < 0 ) {
+    if ( y-40 < 0 ) {
         velocityY = -velocityY;
         y +=velocityY;
     }
 
-    if ( x > MaxX ) {
+    if ( x+30 > MaxX ) {
          velocityX = -velocityX;
          x+=velocityX;
     }
 
-    if ( y > MaxY ) {
+    if ( y+40 > MaxY ) {
          velocityY = -velocityY;
          y+=velocityY;
     }
     
-    QPointF p( x, y );
-    QRectF r( rect() );
-    r.moveTo(p);
-    setRect( r );
+    setPos( x,y );
 }
 
 int Mummy::getHP(){

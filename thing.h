@@ -3,14 +3,14 @@
 #include <QGraphicsRectItem>
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
-
+#include <QRectF>
 /**
   This class maintains the location, size, and speed of a QGraphicsPixmapItem.
   It is easier to do the arithmetic with this data, and then update the position
   separately, then to extract coordinates from the QRectF that is contained within
   the QGraphicsRectItem
   */
-class Thing : public QGraphicsRectItem {
+class Thing : public QGraphicsPixmapItem {
 public:
     Thing();
     Thing(QPixmap *pm, int x, int y, int vx, int vy );
@@ -24,13 +24,15 @@ public:
     int getVelocityX();
     int getVelocityY();
     virtual void move(int x, int y) = 0;
-
+    void loseHP();
+    int getHP();
 protected:
     int x;
     int y;
     int velocityX;
     int velocityY;
     QPixmap* pic;
+    int hp;
 };
 
 #endif // THING_H

@@ -10,14 +10,10 @@
   */
 class Mummy : public Thing {
 public:
-    Mummy(QPixmap *pm, int x, int y, int vx, int vy, bool v_d);
+    Mummy(QPixmap *pm, int x, int y, int vx, int vy);
     void move(int x, int y);
     int getHP();
     void loseHP();
-        
-private:
-    bool vertical_direc;
-    int hp;
 
 };
 

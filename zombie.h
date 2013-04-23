@@ -15,9 +15,6 @@ public:
     int getHP();
     void loseHP();
         
-private:
-    int hp;
-
 };
 
-#endif // MUMMY_H
+#endif // ZOMBIE_H

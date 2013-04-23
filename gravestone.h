@@ -15,8 +15,6 @@ public:
     int getHP();
     void loseHP();
     
-private:
-    int hp;
 };
 
 #endif // GRAVESTONE_H

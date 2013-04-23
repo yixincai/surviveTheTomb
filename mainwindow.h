@@ -29,6 +29,7 @@
 #include "toxic_gas_cloud.h"
 #include "gravestone.h"
 #include "bullet.h"
+#include "player.h"
 
 #define WindowMaxX 1000
 #define WindowMaxY 1000
@@ -51,9 +52,13 @@ public:
     
 private:
     /** A pointer to timer for animation */
-    QTimer* timer_monster, timer_move, timer_gas, timer_speed;
+    QTimer* timer_monster;
+    QTimer* timer_move;
+    QTimer* timer_gas;
+    QTimer* timer_speed;
     
     /** A vertical layout to organize view */
+    QWidget *menu_part;
     QFormLayout *menu_;
     
     QLineEdit *user_;
@@ -64,9 +69,11 @@ private:
     
     QPushButton *pause_;
     
-    QMessageBox* name_, score_, lives_;
+    QMessageBox* name_;
+    QMessageBox* score_;
+    QMessageBox* lives_;
     /** A LineEdit to show error message or the game stage */
-    QMessageBox *error_;   
+    QMessageBox *error_;
      
     /** A pointer to game display */
     QGraphicsScene *gamePlay;
@@ -79,20 +86,31 @@ private:
     QGraphicsView *main;
 
     /** A list of all the tiles */
-    QList<Thing*> myThings;
+    QList<Thing*> monsters;
+    QList<Bullet*> bullets_;
+    Player* p1;
+    QPixmap* mummy_;
+    QPixmap* zombie_;
+    QPixmap* toxic_;
+    QPixmap* grave_;
+    QPixmap* bullet_;
+    QPixmap* player_;
     /** How many times the tiles has moved */
-    int lives, score;
-    /** The direction the tile is going to move */
-    string name;
+    int lives;
+    int score;
 
 public slots:
     /** Clear the scene and create a new board */
     void startGame();
     void pauseGame();
     /** Tell if the puzzle is solved */
-    void solved();
-    /** Animation to move the tile */
-    void animation();
+    void createMonster();
+    void movePlayer();
+    void speedUp();
+    void move();
+
+protected:
+    void keyPressEvent(QKeyEvent *e);
 };
 
 #endif 

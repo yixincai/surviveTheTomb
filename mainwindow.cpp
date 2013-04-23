@@ -15,6 +15,19 @@
  * @author Yixin Cai
  */
 MainWindow::MainWindow() {
+    setFocus();
+    lives = 3;
+    score=0;
+    
+    /** load pictures */
+    QPixmap a("gun.jpg"), b("bullet.jpg"), c("mummy_1.jpg"), d("gravestone.jpg"), e("zombie.jpg"), f("toxic_gas_cloud.jpg");
+    player_ = new QPixmap(a.scaled(50,50));
+    mummy_ = new QPixmap(c.scaled(60,80));
+    zombie_ = new QPixmap(e.scaled(60,80));
+    toxic_ = new QPixmap(f.scaled(50,50));
+    grave_ = new QPixmap(d.scaled(70,70));
+    bullet_ = new QPixmap(b.scaled(30,30));
+    
     mainView_ = new QHBoxLayout();
     
     menu_ = new QFormLayout();
@@ -41,103 +54,58 @@ MainWindow::MainWindow() {
     menu_->addRow("Score: ", score_);
     menu_->addRow("Lives: ", lives_);
     menu_->addRow(error_);
+    menu_part = new QWidget();
+    menu_part->setLayout(menu_);
 
     gamePlay = new QGraphicsScene();
     gamePlay->setSceneRect(0,0,WindowMaxX,WindowMaxY);
     view = new QGraphicsView( gamePlay );
 
-    mainView_->addWidget(menu_);
+    mainView_->addWidget(menu_part);
     mainView_->addWidget(view);
     
     main = new QGraphicsView(); 
     main->setLayout(mainView_);
     
     timer_monster = new QTimer(this);
-    timer_monster->setInterval(500);
+    timer_monster->setInterval(5000);
+    connect(timer_monster, SIGNAL(timeout()), this, SLOT(createMonster()));
     timer_move = new QTimer(this);
-    timer_move->setInterval(60);
+    timer_move->setInterval(5);
+    connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
     timer_gas = new QTimer(this);
     timer_gas->setInterval(1000);
     timer_speed = new QTimer(this);
     timer_speed->setInterval(10000);
+    connect(timer_move, SIGNAL(timeout()), this, SLOT(speedUp()));
 }
-    timer_monster->start();    timer_move->start();    timer_gas->start();    timer_speed->start();
     
 
 /** Create the board according to the input
   * from the user.
   */
-void MainWindow::createBoard(){
+void MainWindow::startGame(){
   /** Clear the display after pressing start */
-  QStandardItemModel* list = new QStandardItemModel();
-  solution_->setModel(list);	
-  error_->setText("");
-  t_list.clear();
-  board_->clear();
+//  QStandardItemModel* list = new QStandardItemModel();
+//  solution_->setModel(list);	
+//  error_->setText("");
+//  t_list.clear();
+//  board_->clear();
   /** Check if the user input is empty */
-  if(size_->text().isEmpty() || size_->text().isEmpty() || size_->text().isEmpty()){
+  if(user_->text().isEmpty() ){
     error_->setText("Empty input.");
     return;
   }
-  bool good =true;
-  int size = size_->text().toInt(&good);
-  /** Check if the user input is string */
-  if (!good){
-    error_->setText("Invalid input.");
-    return;
-  }
-  int initMoves = numOfMoves_->text().toInt(&good);
-  /** Check if the user input is string again */
-  if (!good){
-    error_->setText("Invalid input.");
-    return;
-  }
-  int seed = seeds_->text().toInt(&good);
-  /** Check if the user input is string and again */
-  if (!good){
-    error_->setText("Invalid input.");
-    return;
-  }
-  /** Check if board size is invalid */
-  if((size != 9 && size != 16) ){
-    error_->setText("Invalid input.");
-    return;
-  }
-  b_ = new Board(size,initMoves,seed);
-  /** Create tiles, text item in proper position */
-	for (int i=0;i<size;i++)
-	{
-		
-		if (size == 9)
-		{
-			QString str = QString::number(b_->getTiles()[i]);
-			
-			GUITile *temp = new GUITile((i%(size/3))*50 , (i/(size/3))*50 , 50, 50, this);
-			temp->setText(str);
-			temp->setNum(b_->getTiles()[i]);
-			t_list.push_back(temp);
-			board_->addItem(t_list[i] );
-			board_->addItem(t_list[i]->getText());
-			t_list[i]->getText()->setPos((i%(size/3))*50 , (i/(size/3))*50);
-			if (b_->getTiles()[i]==0){
-				t_list[i]->setText(""); 
-			}
-		}
-		if (size == 16)
-		{
-			QString str = QString::number(b_->getTiles()[i]);
-			GUITile *temp = new GUITile((i%(size/4))*50 , (i/(size/4))*50 , 50, 50, this);
-			temp->setText(str);
-			temp->setNum(b_->getTiles()[i]);
-			t_list.push_back(temp);
-			board_->addItem(t_list[i] );
-			board_->addItem(t_list[i]->getText());
-			t_list[i]->getText()->setPos((i%(size/4))*50 , (i/(size/4))*50);
-			if (b_->getTiles()[i]==0){
-				t_list[i]->setText(""); 
-			}
-		}
-	}
+  name_->setText(user_->text());
+  score_->setText("0");
+  lives_->setText("3");
+
+  p1 = new Player(player_,500,500,0,0);
+  gamePlay->addItem(p1);
+  timer_monster->start();
+  timer_move->start();    
+  timer_gas->start();    
+  timer_speed->start();
 	
 }
 
@@ -152,67 +120,106 @@ void MainWindow::show() {
   *
   * @param i direction for the tile to go
   */
-void MainWindow::moveTile(int i){
-  /** Do not move the tile is the former move is unfinished */
-  if (timer->isActive()){
-      	error_->setText("Please wait until the former move to finish.");
-    	return;
-  }
-  /** Do not move the tile is the game is finished */
-  if (b_->solved())
-  	return;
-  try {
-    b_->move(i);
-  }
-  /** Check if the move can be performed */
-  catch(std::invalid_argument &er){
-    error_->setText("Invalid move.");
-    return;
-  }
-  /** Find source and destination tiles */
-  tileToMove=0;
-  blank=0;
-  for (;tileToMove<t_list.size();tileToMove++){
-  	if (t_list[tileToMove]->getNum() == i)
-  		break;
-  }
-  for (;blank<t_list.size();blank++){
-  	if (t_list[blank]->getNum() == 0)
-  		break;
-  }
-  timer->start();
-  times=0;
-  /** Find the direction to go */
-  double s_x = t_list[tileToMove]->getX(), s_y = t_list[tileToMove]->getY();
-  double d_x = t_list[blank]->getX(), d_y = t_list[blank]->getY();
-  if (d_x-s_x>25)
-  	dir=4;
-  else if (d_x - s_x < -25)
-  	dir = 1;
-  else if (d_y - s_y> 25)
-  	dir = 2;
-  else if (d_y - s_y < -25)
-  	dir = 3;
-  connect(timer,SIGNAL(timeout()),this,SLOT(animation()));
-  /** Display solved message */
-  solved();
+void MainWindow::move(){
+	for (int i=0;i<monsters.size();i++)
+		monsters[i]->move(1000,1000);
+	for (int j=0;j<monsters.size();j++){
+		if (monsters[j]->collidesWithItem(&p1)){
+			lives--;
+		}
+		for (int k=0;k<bullets_.size();k++)
+			if (monsters[j]->collidesWithItem(bullets_[k])){
+				monsters[j]->loseHP();
+				delete bullets_[k];
+				bullets.remove(bullets[k]);
+			}
+	}
+		
 }
 
-/** Perform the animation until the tiles has been 
-  * moved 50 timesand stop the timer then
-  */
-void MainWindow::animation(){
-  if (times == 50){
-  	timer->stop();
-  	return;
-  }
-  times++;
-  /** Move both blank and moving tiles */
-  t_list[tileToMove]->move(dir);
-  t_list[blank]->move(5-dir);
-
+void MainWindow::pauseGame(){
+  timer_monster->stop();
+  timer_move->stop();    
+  timer_gas->stop();    
+  timer_speed->stop();
 }
 
+
+void MainWindow::speedUp(){
+	for (int i=0;i<monsters.size();i++){
+		monsters[i]->setVelocityX(2*monsters[i]->getVelocityX());
+		monsters[i]->setVelocityY(2*monsters[i]->getVelocityY());
+	}
+}
+
+void MainWindow::createMonster(){
+	int i = rand()%4;
+	if (i==0){
+		if (rand()%2){
+			Mummy *m = new Mummy(mummy_, rand()%1000, 0, 0, 3);
+			gamePlay->addItem(m);
+			monsters.push_back(m);
+		}
+		else{
+			Mummy *m = new Mummy(mummy_, 0, rand()%1000, 3, 0);
+			gamePlay->addItem(m);
+			monsters.push_back(m);
+		}
+	}
+	else if (i==1){
+		Zombie *z = new Zombie(zombie_, rand()%1000, rand()%1000, 6*(rand()%2)-3, 6*(rand()%2)-3);
+		gamePlay->addItem(z);
+		monsters.push_back(z);
+	}
+	else if (i==2){
+		Gravestone *g = new Gravestone(grave_, rand()%1000, rand()%1000, 0, 0);
+		gamePlay->addItem(g);
+		monsters.push_back(g);
+	}
+	else if (i==3){
+		if (monsters.size()==0)
+			return;
+		int p = rand()%monsters.size();
+		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX()+50, monsters[p]->getY()+50, 6*(rand()%2)-3, 6*(rand()%2)-3);
+		gamePlay->addItem(t);
+		monsters.push_back(t);
+	}
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e){
+	if (e->key() == Qt::Key_Left){
+		p1->move(1000,1000,1);
+	}
+	else if (e->key() == Qt::Key_Right){
+		p1->move(1000,1000,3);
+	} 
+	else if (e->key() == Qt::Key_Up){
+		p1->move(1000,1000,2);
+	} 
+	else if (e->key() == Qt::Key_Down){
+		p1->move(1000,1000,4);
+	}
+	else if (e->key() == Qt::Key_A){
+		Bullet *b = new Bullet(bullet_, p1->getX()-70, p1->getY(), -7, 0);
+		gamePlay->addItem(b);
+		bullets_.push_back(b);
+	} 
+	else if (e->key() == Qt::Key_W){
+		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()-70, 0, -7);
+		gamePlay->addItem(b);
+		bullets_.push_back(b);
+	} 
+	else if (e->key() == Qt::Key_D){
+		Bullet *b = new Bullet(bullet_, p1->getX()+70, p1->getY(), 7, 0);
+		gamePlay->addItem(b);
+		bullets_.push_back(b);
+	} 
+	else if (e->key() == Qt::Key_S){
+		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()+70, 0, 7);
+		gamePlay->addItem(b);
+		bullets_.push_back(b);
+	} 
+}
 
 /** Destructor */
 MainWindow::~MainWindow()

@@ -8,6 +8,8 @@ void Player::move(int MaxX, int MaxY){
 }
 
 void Player::move(int MaxX, int MaxY, int dir){
+	if (x-5<0 || x+55>MaxX || y-5<MaxY || y+55>MaxY)
+		return;
 	if (dir == 1){
     		x -= 5;
     	}

@@ -1,10 +1,10 @@
 #include "zombie.h"
 
-Zombie::Zombie(QPixmap *pm, int x, int y, int vx, int vy) : Thing(QPixmap *pm, int x, int y, int vx, int vy ) {
+Zombie::Zombie(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, vy ) {
 	hp=5;
 }
 
-Zombie::move(int MaxX, int MaxY){
+void Zombie::move(int MaxX, int MaxY){
     y += velocityY;
     x += velocityX;
 
@@ -28,10 +28,7 @@ Zombie::move(int MaxX, int MaxY){
          y+=velocityY;
     }
     
-    QPointF p( x, y );
-    QRectF r( rect() );
-    r.moveTo(p);
-    setRect( r );
+    setPos( x,y );
 }
 
 int Zombie::getHP(){
