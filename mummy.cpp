@@ -8,22 +8,22 @@ void Mummy::move(int MaxX, int MaxY){
     	y += velocityY;
     	x += velocityX;
 
-    if ( x-30 < 0 ) {
+    if ( x < 0 ) {
         velocityX = -velocityX;
         x +=velocityX;
     }
 
-    if ( y-40 < 0 ) {
+    if ( y < 0 ) {
         velocityY = -velocityY;
         y +=velocityY;
     }
 
-    if ( x+30 > MaxX ) {
+    if ( x+60 > MaxX ) {
          velocityX = -velocityX;
          x+=velocityX;
     }
 
-    if ( y+40 > MaxY ) {
+    if ( y+80 > MaxY ) {
          velocityY = -velocityY;
          y+=velocityY;
     }

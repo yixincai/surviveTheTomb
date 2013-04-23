@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cstring>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -39,7 +40,7 @@
 
  * @author Yixin Cai
  */
-class MainWindow : public QGraphicsView  {
+class MainWindow : public QMainWindow  {
     Q_OBJECT
     
 public:
@@ -104,8 +105,8 @@ public slots:
     void startGame();
     void pauseGame();
     /** Tell if the puzzle is solved */
+    void createBullet(int d);
     void createMonster();
-    void movePlayer();
     void speedUp();
     void move();
 

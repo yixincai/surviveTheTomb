@@ -15,7 +15,7 @@
  * @author Yixin Cai
  */
 MainWindow::MainWindow() {
-    setFocus();
+
     lives = 3;
     score=0;
     
@@ -58,9 +58,9 @@ MainWindow::MainWindow() {
     menu_part->setLayout(menu_);
 
     gamePlay = new QGraphicsScene();
-    gamePlay->setSceneRect(0,0,WindowMaxX,WindowMaxY);
+    gamePlay->setSceneRect(0,0,500,200);
     view = new QGraphicsView( gamePlay );
-
+    view->setFocus();
     mainView_->addWidget(menu_part);
     mainView_->addWidget(view);
     
@@ -100,7 +100,7 @@ void MainWindow::startGame(){
   score_->setText("0");
   lives_->setText("3");
 
-  p1 = new Player(player_,500,500,0,0);
+  p1 = new Player(player_,50, 50 ,0,0);
   gamePlay->addItem(p1);
   timer_monster->start();
   timer_move->start();    
@@ -124,14 +124,18 @@ void MainWindow::move(){
 	for (int i=0;i<monsters.size();i++)
 		monsters[i]->move(1000,1000);
 	for (int j=0;j<monsters.size();j++){
-		if (monsters[j]->collidesWithItem(&p1)){
+		if (monsters[j]->collidesWithItem(p1)){
 			lives--;
 		}
 		for (int k=0;k<bullets_.size();k++)
 			if (monsters[j]->collidesWithItem(bullets_[k])){
 				monsters[j]->loseHP();
 				delete bullets_[k];
-				bullets.remove(bullets[k]);
+				bullets_.removeAt(k);
+				if (monsters[j]->getHP()==0){
+					delete monsters[j];
+					monsters.removeAt(j);
+				}
 			}
 	}
 		
@@ -187,39 +191,58 @@ void MainWindow::createMonster(){
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e){
-	if (e->key() == Qt::Key_Left){
-		p1->move(1000,1000,1);
-	}
-	else if (e->key() == Qt::Key_Right){
-		p1->move(1000,1000,3);
-	} 
-	else if (e->key() == Qt::Key_Up){
-		p1->move(1000,1000,2);
-	} 
-	else if (e->key() == Qt::Key_Down){
-		p1->move(1000,1000,4);
-	}
-	else if (e->key() == Qt::Key_A){
+	switch(e->key()){
+		case Qt::Key_Left:
+			p1->move(1000,1000,1);
+			break;
+		case Qt::Key_Right:
+			p1->move(1000,1000,3);
+			break;
+		case Qt::Key_Up:
+			p1->move(1000,1000,2);
+			break;
+		case Qt::Key_Down:
+			p1->move(1000,1000,4);
+			break;
+		case Qt::Key_A:
+			createBullet(1);
+			break;
+		case Qt::Key_W:
+			createBullet(2);
+			break;
+		case Qt::Key_S:
+			createBullet(3);
+			break;
+		case Qt::Key_D:
+			createBullet(4);
+			break;
+	};
+
+}
+
+void MainWindow::createBullet(int d){
+	if (d==1){
 		Bullet *b = new Bullet(bullet_, p1->getX()-70, p1->getY(), -7, 0);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
-	else if (e->key() == Qt::Key_W){
+	else if (d == 2){
 		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()-70, 0, -7);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
-	else if (e->key() == Qt::Key_D){
+	else if (d == 3){
 		Bullet *b = new Bullet(bullet_, p1->getX()+70, p1->getY(), 7, 0);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
-	else if (e->key() == Qt::Key_S){
+	else if (d == 4){
 		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()+70, 0, 7);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
 }
+
 
 /** Destructor */
 MainWindow::~MainWindow()
