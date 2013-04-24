@@ -18,12 +18,14 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QList>
 #include <QMessageBox>
+#include <QString>
 #include "thing.h"
 #include "mummy.h"
 #include "zombie.h"
@@ -55,7 +57,6 @@ private:
     /** A pointer to timer for animation */
     QTimer* timer_monster;
     QTimer* timer_move;
-    QTimer* timer_gas;
     QTimer* timer_speed;
     
     /** A vertical layout to organize view */
@@ -70,9 +71,9 @@ private:
     
     QPushButton *pause_;
     
-    QMessageBox* name_;
-    QMessageBox* score_;
-    QMessageBox* lives_;
+    QLineEdit* name_;
+    QLineEdit* score_;
+    QLineEdit* lives_;
     /** A LineEdit to show error message or the game stage */
     QMessageBox *error_;
      
@@ -82,7 +83,7 @@ private:
     QGraphicsView *view;    
     
     /** A layout to organize the whole view */
-    QHBoxLayout *mainView_;
+    QGridLayout *mainView_;
     /** A pointer to everything to display */
     QGraphicsView *main;
 

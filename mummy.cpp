@@ -1,7 +1,7 @@
 #include "mummy.h"
 
 Mummy::Mummy(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, vy ) {
-	hp=3;
+	hp=1;
 }
 
 void Mummy::move(int MaxX, int MaxY){
@@ -18,12 +18,12 @@ void Mummy::move(int MaxX, int MaxY){
         y +=velocityY;
     }
 
-    if ( x+60 > MaxX ) {
+    if ( x+40 > MaxX ) {
          velocityX = -velocityX;
          x+=velocityX;
     }
 
-    if ( y+80 > MaxY ) {
+    if ( y+60 > MaxY ) {
          velocityY = -velocityY;
          y+=velocityY;
     }

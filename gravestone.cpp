@@ -1,11 +1,13 @@
 #include "gravestone.h"
 
 Gravestone::Gravestone(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, vy ) {
-	hp=7;
+	hp=5;
 }
 
 void Gravestone::move(int MaxX, int MaxY){
-	return;
+    y += velocityY;
+    x += velocityX;
+    setPos( x,y );
 }
 
 int Gravestone::getHP(){
