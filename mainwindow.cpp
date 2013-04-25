@@ -75,7 +75,7 @@ MainWindow::MainWindow() {
     timer_move->setInterval(100);
     connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
     timer_speed = new QTimer(this);
-    timer_speed->setInterval(10000);
+    timer_speed->setInterval(50000);
     connect(timer_speed, SIGNAL(timeout()), this, SLOT(speedUp()));
     p1 = new Player(player_,-100, -100 ,0,0);
     gamePlay->addItem(p1);
@@ -98,7 +98,7 @@ void MainWindow::startGame(){
     error_->setText("Please enter user name.");
     return;
   }
-  lives = 3;
+  lives = 10;
   score = 0;
   QString str_l = QString::number(lives);
   QString str_s = QString::number(score);
@@ -135,6 +135,11 @@ void MainWindow::show() {
   */
 void MainWindow::move(){	
 	for (int j=0;j<monsters.size();j++){
+		if (monsters[j]->getX()<-60||monsters[j]->getY()<-60){
+			delete monsters[j];
+			monsters.removeAt(j);
+			continue;
+		}
 		monsters[j]->move(500,200);
 
 		if (monsters[j]->collidesWithItem(p1)){
@@ -150,6 +155,11 @@ void MainWindow::move(){
 		}
 	}
 	for (int k=0;k<bullets_.size();k++){
+		if (bullets_[k]->getX()<-20||bullets_[k]->getX()>500||bullets_[k]->getY()<-10||bullets_[k]->getY()>200){
+			delete bullets_[k];
+			bullets_.removeAt(k);
+			continue;
+		}
 		bullets_[k]->move(500,200);
 		for (int j=0;j<monsters.size();j++)
 			if (monsters[j]->collidesWithItem(bullets_[k])){
@@ -163,7 +173,14 @@ void MainWindow::move(){
 				}
 				return;
 			}
+		
 	}
+//	for (int j=0;j<monsters.size();j++)
+//		for (int k=j+1;k<monsters.size();k++)
+//			if (monsters[j]->collidesWithItem(monsters[k])){
+//				monsters[j]->changeDir();
+//				monsters[k]->changeDir();
+//			}
   QString str_l = QString::number(lives);
   QString str_s = QString::number(score);
   score_->setText(str_s);
@@ -206,7 +223,7 @@ void MainWindow::createMonster(){
 		monsters.push_back(z);
 	}
 	else if (i==2){
-		Gravestone *g = new Gravestone(grave_, rand()%500, rand()%200, -1, 0);
+		Gravestone *g = new Gravestone(grave_, rand()%450, rand()%150, -1, 0);
 		gamePlay->addItem(g);
 		monsters.push_back(g);
 	}
@@ -214,7 +231,7 @@ void MainWindow::createMonster(){
 		if (monsters.size()==0)
 			return;
 		int p = rand()%monsters.size();
-		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX()+60*(rand()%2)-30, monsters[p]->getY()+60*(rand()%2)-30, 6*(rand()%2)-3, 6*(rand()%2)-3);
+		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX(), monsters[p]->getY(), 6*(rand()%2)-3, 6*(rand()%2)-3);
 		gamePlay->addItem(t);
 		monsters.push_back(t);
 	}
