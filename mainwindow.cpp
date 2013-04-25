@@ -7,7 +7,7 @@
 using namespace std;
 /** Default constructor.
  * Organize the Layout of the MainWindow
- * 1. Start and Quit Button
+ * 1. Start, Pause and Quit Button
  * 2. Three input boxes
  * 3. Heuristic Selection
  * 4. Board
@@ -44,6 +44,7 @@ MainWindow::MainWindow() {
     score_ = new QLineEdit();
     lives_ = new QLineEdit();
     error_ = new QMessageBox();
+    error_->setText("Enter your name and press start.\nDo not click on OK button.");
     
     menu_->addRow("User name: ", user_);
     menu_->addRow(start_);
@@ -61,8 +62,8 @@ MainWindow::MainWindow() {
     view = new myView( this );
     view->setScene(gamePlay);
     view->setFocus();     
-    mainView_->addWidget(view, 0,0,3,5);    
-    mainView_->addWidget(menu_part,0,6);
+    mainView_->addWidget(view, 0,0,3,6);    
+    mainView_->addWidget(menu_part,0,7,0,1);
     main = new QMainWindow();
     c_= new QWidget(main);    
     c_->setLayout(mainView_);
@@ -75,10 +76,11 @@ MainWindow::MainWindow() {
     timer_move->setInterval(100);
     connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
     timer_speed = new QTimer(this);
-    timer_speed->setInterval(50000);
+    timer_speed->setInterval(20000);
     connect(timer_speed, SIGNAL(timeout()), this, SLOT(speedUp()));
     p1 = new Player(player_,-100, -100 ,0,0);
     gamePlay->addItem(p1);
+    lives = 0;
 }
     
 
@@ -93,11 +95,15 @@ void MainWindow::startGame(){
 //  t_list.clear();
 //  board_->clear();
   /** Check if the user input is empty */
-
+  if (lives!=0){
+  	error_->setText("You still have lives!");
+  	return;
+  }
   if(user_->text().isEmpty() ){
     error_->setText("Please enter user name.");
     return;
   }
+  error_->setText("Click the view.\nPress I, J, K and L to move.\nPress A, S, D and W to shoot.");
   lives = 10;
   score = 0;
   QString str_l = QString::number(lives);
@@ -119,7 +125,6 @@ void MainWindow::startGame(){
   timer_monster->start();
   timer_move->start();       
   timer_speed->start();
-	
 }
 
 /** display the view */
@@ -191,11 +196,13 @@ void MainWindow::pauseGame(){
   if (lives==0)
   	return;
   if (timer_monster->isActive()){
+    pause_->setText("Resume");
     timer_monster->stop();
     timer_move->stop();       
     timer_speed->stop();
   }
   else {
+    pause_->setText("Pause");
     timer_monster->start();
     timer_move->start();       
     timer_speed->start();

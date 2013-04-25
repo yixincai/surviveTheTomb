@@ -39,7 +39,7 @@
 #define WindowMaxY 1000
 
 /**
- * A class to display and allow the user to play the puzzle game.
+ * A class to display and allow the user to play the game.
 
  * @author Yixin Cai
  */
@@ -55,64 +55,81 @@ public:
     void show();
     
 private:
-    /** A pointer to timer for animation */
+    /** A timer for to create monsters */
     QTimer* timer_monster;
+    /** A timer for things to move */
     QTimer* timer_move;
+    /** A timer to speed up */
     QTimer* timer_speed;
     
-    /** A vertical layout to organize view */
+    /** A widget to contain everything */
     QWidget *menu_part;
+    /** A form layout to contain the menu */
     QFormLayout *menu_;
     
+    /** A box to allow the user to enter his name */
     QLineEdit *user_;
     /** A PushButton to start the game */
     QPushButton *start_;
     /** A PushButton to quit the game */
     QPushButton *quit_;
-    
+    /** A PushButton to pause the game */
     QPushButton *pause_;
     
+    /** A box to show the user name */
     QLineEdit* name_;
+    /** A box to show the score */ 
     QLineEdit* score_;
+    /** A box to show the remaining lives */
     QLineEdit* lives_;
     /** A LineEdit to show error message or the game stage */
     QMessageBox *error_;
      
-    /** A pointer to game display */
+    /** A scene to game display */
     QGraphicsScene *gamePlay;
-    /** A pointer to view of the game */
-    myView *view;    
+    /** A view to show the scene and capture the key press event */
+    myView *view;
+    /** A widget to contain the whole view */ 
     QWidget *c_;
-    /** A layout to organize the whole view */
+    /** A layout to organize the view */
     QGridLayout *mainView_;
     /** A pointer to everything to display */
     QMainWindow *main;
 
-    /** A list of all the tiles */
+    /** A list of all the monsters */
     QList<Thing*> monsters;
+    /** A list of all bullets */
     QList<Bullet*> bullets_;
+    /** The player */
     Player* p1;
+    /** Pixmaps for everything */
     QPixmap* mummy_;
     QPixmap* zombie_;
     QPixmap* toxic_;
     QPixmap* grave_;
     QPixmap* bullet_;
     QPixmap* player_;
-    /** How many times the tiles has moved */
+    /** Lives the user has */
     int lives;
+    /** score of the user */
     int score;
 
 public slots:
-    /** Clear the scene and create a new board */
+    /** Clear the scene and create a new game */
     void startGame();
+    /** Pause the game */
     void pauseGame();
-    /** Tell if the puzzle is solved */
+    /** Create the bullets */
     void createBullet(int d);
+    /** Create the monsters */
     void createMonster();
+    /** speed up everything in the scene */
     void speedUp();
+    /** move everything */
     void move();
 
 public:
+    /** Capture the movement of the key from the view */
     void keyPressEvent1(QKeyEvent *e);
 };
 

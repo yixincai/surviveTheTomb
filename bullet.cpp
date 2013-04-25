@@ -5,6 +5,8 @@ Bullet::Bullet(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, 
 }
 
 void Bullet::move(int MaxX, int MaxY){
+    MaxX++;
+    MaxY++;
     y += velocityY;
     x += velocityX;
     setPos( x,y );

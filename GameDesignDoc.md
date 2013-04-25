@@ -10,43 +10,43 @@ The player will need to survive from hitting the monsters and gain points from k
 ### Things
 Things that appear on the screen:
   1. Player: move in eight directions (up, down, right, left, up-right, up-left, down-right, down-left)
-  2. [Mummies](mummy_1.jpg): 3HP, appear from the edge of the scene, and move vertically or horizontally with low speed.
+  2. [Mummies](mummy_1.jpg): 1HP, appear from the edge of the scene, and move horizontally with medium speed.
   
   ![alt text](mummy_1.jpg "mummy")
-  3. [Zombies](zombie.jpg): 5HP, appear from the edge of the scene, and move randomly with high speed.
+  3. [Zombies](zombie.jpg): 3HP, appear from the edge of the scene, and move randomly with high speed.
   
   ![alt text](zombie.jpg "zombie")
-  4. [Gravestones](gravestone.jpg): 7HP, appear randomly on the scene and remain still.
+  4. [Gravestones](gravestone.jpg): 5HP, appear randomly on the scene and move horizontally with low speed.
   
   ![alt text](gravestone.jpg "gravestone")
-  5. [Toxic gas cloud](toxic_gas_cloud.jpg): Emitted by zombies and mummies and move randomly.
+  5. [Toxic gas cloud](toxic_gas_cloud.jpg): Invincible, emitted by zombies, mummies, graves and themselves and move randomly.
   
   ![alt text](toxic_gas_cloud.jpg "toxic gas")
-  6. [Bullets](bullet.jpg): Emitted by the player and move only horizontally or vertically from.
+  6. [Bullets](bullet.jpg): Emitted by the player and move only horizontally or vertically.
   
   ![alt text](bullet.jpg  "bullet")
 
 ### Player control
 
 #### Keyboard
-  1. left arrow, right arrow, up arrow, down arrow: control the user to move up/down/left/right
+  1. key i, k, j, l: control the user to move up/down/left/right.
   2. key w,a,s,d: shoot bullets to up, left, down and right respectively.
   
 #### Mouse
-  click start, pause, quit buttons and buy lifes
+  click start, pause, quit buttons
 
 ### Points
 Player starta with 0 points.
 Player will get:
-  1. 3 points when killing a mummy
-  2. 5 points when killing a zombie
-  3. 7 points when destructing a gravestone
-100 points will be reduced when purchasing an extra life.
+  1 point everytime the bullets hit a zombie/mummy/gravestone/toxic gas. As a result:
+  1. Each mummy provides 1 point.
+  2. Each zombie provides 3 points.
+  3. Each gravestone provides 5 points.
+  4. Toxic gas provides infinite points.
 
 ### Lifes:
-Each player will have 3 lifes initially.
-They can buy one extra life with 100 points they have got.
-Everytime the player touchs a zombie/mummy/tomb/toxic gas, one life will be lost.
+Each player will have 10 lives initially.
+Everytime the player touchs a zombie/mummy/gravestone/toxic gas, one life will be lost.
 The game is over when the player has no lives any more.
 
 ### User interface
