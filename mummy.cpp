@@ -38,3 +38,7 @@ int Mummy::getHP(){
 void Mummy::loseHP(){
 	hp--;
 }
+
+void Mummy::changeDir(){
+
+}

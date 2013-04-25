@@ -30,3 +30,11 @@ void ToxicGasCloud::move(int MaxX, int MaxY){
     setPos( x,y );
 }
 
+void ToxicGasCloud::loseHP(){
+
+}
+
+void ToxicGasCloud::changeDir(){
+	velocityX = -velocityX;
+	velocityY = -velocityY;
+}

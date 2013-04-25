@@ -10,3 +10,9 @@ void Bullet::move(int MaxX, int MaxY){
     setPos( x,y );
 }
 
+void Bullet::loseHP(){
+
+}
+
+void Bullet::changeDir(){
+}

@@ -38,3 +38,8 @@ int Zombie::getHP(){
 void Zombie::loseHP(){
 	hp--;
 }
+
+void Zombie::changeDir(){
+	velocityX = -velocityX;
+	velocityY = -velocityY;
+}

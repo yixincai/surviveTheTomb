@@ -27,3 +27,9 @@ void Player::move(int MaxX, int MaxY, int dir){
 
 
 }
+
+void Player::loseHP(){
+}
+
+void Player::changeDir(){
+}

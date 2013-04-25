@@ -24,7 +24,8 @@ public:
     int getVelocityX();
     int getVelocityY();
     virtual void move(int x, int y) = 0;
-    void loseHP();
+    virtual void loseHP() = 0;
+    virtual void changeDir() = 0;
     int getHP();
 protected:
     int x;

@@ -14,6 +14,7 @@ public:
     void move(int x, int y);
     int getHP();
     void loseHP();
+    void changeDir();
         
 };
 

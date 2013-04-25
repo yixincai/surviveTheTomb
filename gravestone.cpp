@@ -17,3 +17,7 @@ int Gravestone::getHP(){
 void Gravestone::loseHP(){
 	hp--;
 }
+
+void Gravestone::changeDir(){
+
+}

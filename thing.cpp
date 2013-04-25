@@ -56,9 +56,6 @@ void Thing::setPixmap(QPixmap* pm){
     pic=pm;
 }
 
-void Thing::loseHP(){
-}
-
 int Thing::getHP(){
 	return hp;
 }

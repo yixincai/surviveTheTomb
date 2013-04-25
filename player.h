@@ -12,6 +12,8 @@ class Player : public Thing {
 public:
     Player(QPixmap *pm, int x, int y, int vx, int vy);
     void move(int x, int y);
+    void loseHP();
+    void changeDir();
     
 public slots:
     void move(int x, int y, int dir);

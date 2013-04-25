@@ -75,7 +75,7 @@ MainWindow::MainWindow() {
     timer_monster->setInterval(2000);
     connect(timer_monster, SIGNAL(timeout()), this, SLOT(createMonster()));
     timer_move = new QTimer(this);
-    timer_move->setInterval(200);
+    timer_move->setInterval(100);
     connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
     timer_speed = new QTimer(this);
     timer_speed->setInterval(10000);
@@ -127,6 +127,7 @@ void MainWindow::show() {
 void MainWindow::move(){	
 	for (int j=0;j<monsters.size();j++){
 		monsters[j]->move(500,200);
+
 		if (monsters[j]->collidesWithItem(p1)){
 			lives--;
 			if (lives == 0){
@@ -204,17 +205,15 @@ void MainWindow::createMonster(){
 		if (monsters.size()==0)
 			return;
 		int p = rand()%monsters.size();
-		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX()+50, monsters[p]->getY()+50, 6*(rand()%2)-3, 6*(rand()%2)-3);
+		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX()+60*(rand()%2)-30, monsters[p]->getY()+60*(rand()%2)-30, 6*(rand()%2)-3, 6*(rand()%2)-3);
 		gamePlay->addItem(t);
 		monsters.push_back(t);
 	}
 }
 
 void MainWindow::keyPressEvent1(QKeyEvent *e){
-	cout<<"captured."<<endl;
 	switch(e->key()){
 		case Qt::Key_J:
-			cout<<"Key presses."<<endl;
 			p1->move(500,200,1);
 			break;
 		case Qt::Key_L:
@@ -227,7 +226,6 @@ void MainWindow::keyPressEvent1(QKeyEvent *e){
 			p1->move(500,200,4);
 			break;
 		case Qt::Key_A:
-			cout<<"Key presses."<<endl;
 			createBullet(1);
 			break;
 		case Qt::Key_W:

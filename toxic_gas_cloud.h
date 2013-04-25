@@ -12,7 +12,8 @@ class ToxicGasCloud : public Thing {
 public:
     ToxicGasCloud(QPixmap *pm, int x, int y, int vx, int vy);
     void move(int x, int y);
-    
+    void loseHP();
+    void changeDir();
 };
 
 #endif // TOXIC_H
