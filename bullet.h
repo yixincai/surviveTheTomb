@@ -4,9 +4,6 @@
 
 /**
   This class maintains the location, size, and speed of a Bullet.
-  It is easier to do the arithmetic with this data, and then update the position
-  separately, then to extract coordinates from the QRectF that is contained within
-  the QGraphicsRectItem
   */
 class Bullet : public Thing {
 public:
