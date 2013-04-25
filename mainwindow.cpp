@@ -38,7 +38,7 @@ MainWindow::MainWindow() {
     connect (start_, SIGNAL(clicked()), this, SLOT(startGame()));
     /** make the Quit button able to quit the program when pressed */
     connect (quit_, SIGNAL(clicked()), qApp, SLOT(quit()));
-    
+    /** pause the game */
     connect (pause_, SIGNAL(clicked()), this, SLOT(pauseGame()));
     name_ = new QLineEdit();
     score_ = new QLineEdit();
@@ -69,36 +69,33 @@ MainWindow::MainWindow() {
     c_->setLayout(mainView_);
     main->setCentralWidget(c_);
   
+    /** timer to create monsters */
     timer_monster = new QTimer(this);
     timer_monster->setInterval(2000);
     connect(timer_monster, SIGNAL(timeout()), this, SLOT(createMonster()));
+    /** timer to move things */
     timer_move = new QTimer(this);
     timer_move->setInterval(100);
     connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
+    /** timer to speed up all things in the scene */
     timer_speed = new QTimer(this);
     timer_speed->setInterval(20000);
     connect(timer_speed, SIGNAL(timeout()), this, SLOT(speedUp()));
+    /**create new user and put it outside the view */
     p1 = new Player(player_,-100, -100 ,0,0);
     gamePlay->addItem(p1);
     lives = 0;
 }
     
 
-/** Create the board according to the input
-  * from the user.
-  */
+/** Create the game.  */
 void MainWindow::startGame(){
-  /** Clear the display after pressing start */
-//  QStandardItemModel* list = new QStandardItemModel();
-//  solution_->setModel(list);	
-//  error_->setText("");
-//  t_list.clear();
-//  board_->clear();
-  /** Check if the user input is empty */
+  /** check if the game is still on. */
   if (lives!=0){
   	error_->setText("You still have lives!");
   	return;
   }
+  /** Check if the user input is empty */
   if(user_->text().isEmpty() ){
     error_->setText("Please enter user name.");
     return;
@@ -114,6 +111,7 @@ void MainWindow::startGame(){
   p1 ->setPos(50,50);
   p1 ->setY(50);
   p1 ->setX(50); 
+  /** clear the former game */
   for (int j=0;j<monsters.size();j++){
   	delete monsters[j];
   }
@@ -122,6 +120,7 @@ void MainWindow::startGame(){
   	delete bullets_[k];
   }
   bullets_.clear();
+  /** start the timers */
   timer_monster->start();
   timer_move->start();       
   timer_speed->start();
@@ -132,21 +131,19 @@ void MainWindow::show() {
     main->show();
 }
 
-/** Move the tile tho certain direction
-  * by one pixel at a time until it has been 
-  * moved 50 times.
-  *
-  * @param i direction for the tile to go
+/** Move the monsters and bullets.
   */
 void MainWindow::move(){	
 	for (int j=0;j<monsters.size();j++){
+		/** delete the monsters outside of the scene */
 		if (monsters[j]->getX()<-60||monsters[j]->getY()<-60){
 			delete monsters[j];
 			monsters.removeAt(j);
 			continue;
 		}
+		/** move monsters */
 		monsters[j]->move(500,200);
-
+		/** monster hits the player */
 		if (monsters[j]->collidesWithItem(p1)){
 			lives--;
 			if (lives == 0){
@@ -160,12 +157,14 @@ void MainWindow::move(){
 		}
 	}
 	for (int k=0;k<bullets_.size();k++){
+		/** remove bullets out of scene */
 		if (bullets_[k]->getX()<-20||bullets_[k]->getX()>500||bullets_[k]->getY()<-10||bullets_[k]->getY()>200){
 			delete bullets_[k];
 			bullets_.removeAt(k);
 			continue;
 		}
 		bullets_[k]->move(500,200);
+		/** kill monsters with bullets */
 		for (int j=0;j<monsters.size();j++)
 			if (monsters[j]->collidesWithItem(bullets_[k])){
 				monsters[j]->loseHP();
@@ -178,7 +177,6 @@ void MainWindow::move(){
 				}
 				return;
 			}
-		
 	}
 //	for (int j=0;j<monsters.size();j++)
 //		for (int k=j+1;k<monsters.size();k++)
@@ -192,6 +190,7 @@ void MainWindow::move(){
   lives_->setText(str_l);
 }
 
+/** pause the game by stopping the timers */
 void MainWindow::pauseGame(){
   if (lives==0)
   	return;
@@ -209,7 +208,7 @@ void MainWindow::pauseGame(){
   }
 }
 
-
+/** speed up everything on the screen */
 void MainWindow::speedUp(){
 	for (int i=0;i<monsters.size();i++){
 		monsters[i]->setVelocityX(2*monsters[i]->getVelocityX());
@@ -217,6 +216,7 @@ void MainWindow::speedUp(){
 	}
 }
 
+/** randomly create one of the four monsters */
 void MainWindow::createMonster(){
 	int i = rand()%4;
 	if (i==0){
@@ -244,6 +244,7 @@ void MainWindow::createMonster(){
 	}
 }
 
+/** captuer key presses and move user or shoot bullet */
 void MainWindow::keyPressEvent1(QKeyEvent *e){
 	if (!timer_monster->isActive())
 		return;
@@ -276,6 +277,9 @@ void MainWindow::keyPressEvent1(QKeyEvent *e){
 
 }
 
+/** create bullet 
+  * @param d the direction of bullets
+  */
 void MainWindow::createBullet(int d){
 	if (d==1){
 		Bullet *b = new Bullet(bullet_, p1->getX()-30, p1->getY(), -7, 0);
