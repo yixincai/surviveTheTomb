@@ -33,6 +33,7 @@
 #include "gravestone.h"
 #include "bullet.h"
 #include "player.h"
+#include "myview.h"
 
 #define WindowMaxX 1000
 #define WindowMaxY 1000
@@ -80,12 +81,12 @@ private:
     /** A pointer to game display */
     QGraphicsScene *gamePlay;
     /** A pointer to view of the game */
-    QGraphicsView *view;    
-    
+    myView *view;    
+    QWidget *c_;
     /** A layout to organize the whole view */
     QGridLayout *mainView_;
     /** A pointer to everything to display */
-    QGraphicsView *main;
+    QMainWindow *main;
 
     /** A list of all the tiles */
     QList<Thing*> monsters;
@@ -111,8 +112,8 @@ public slots:
     void speedUp();
     void move();
 
-protected:
-    void keyPressEvent(QKeyEvent *e);
+public:
+    void keyPressEvent1(QKeyEvent *e);
 };
 
 #endif 

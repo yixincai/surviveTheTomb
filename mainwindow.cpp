@@ -28,7 +28,7 @@ MainWindow::MainWindow() {
     zombie_ = new QPixmap(e.scaled(40,60));
     toxic_ = new QPixmap(f.scaled(30,30));
     grave_ = new QPixmap(d.scaled(50,50));
-    bullet_ = new QPixmap(b.scaled(30,30));
+    bullet_ = new QPixmap(b.scaled(20,20));
     
     mainView_ = new QGridLayout();
     
@@ -61,20 +61,21 @@ MainWindow::MainWindow() {
 
     gamePlay = new QGraphicsScene();
     gamePlay->setSceneRect(0,0,500,200);
-    view = new QGraphicsView( gamePlay );
-
-    mainView_->addWidget(view, 0,0,3,3);    
-    mainView_->addWidget(menu_part,0,4);
-
-    
-    main = new QGraphicsView(); 
-    main->setLayout(mainView_);
-    main->setFocus();    
+    view = new myView( this );
+    view->setScene(gamePlay);
+    view->setFocus();     
+    mainView_->addWidget(view, 0,0,3,5);    
+    mainView_->addWidget(menu_part,0,6);
+    main = new QMainWindow();
+    c_= new QWidget(main);    
+    c_->setLayout(mainView_);
+    main->setCentralWidget(c_);
+  
     timer_monster = new QTimer(this);
-    timer_monster->setInterval(500);
+    timer_monster->setInterval(2000);
     connect(timer_monster, SIGNAL(timeout()), this, SLOT(createMonster()));
     timer_move = new QTimer(this);
-    timer_move->setInterval(50);
+    timer_move->setInterval(200);
     connect(timer_move, SIGNAL(timeout()), this, SLOT(move()));
     timer_speed = new QTimer(this);
     timer_speed->setInterval(10000);
@@ -137,15 +138,20 @@ void MainWindow::move(){
 			delete monsters[j];
 			monsters.removeAt(j);
 		}
-		for (int k=0;k<bullets_.size();k++)
+	}
+	for (int k=0;k<bullets_.size();k++){
+		bullets_[k]->move(500,200);
+		for (int j=0;j<monsters.size();j++)
 			if (monsters[j]->collidesWithItem(bullets_[k])){
 				monsters[j]->loseHP();
+				score++;
 				delete bullets_[k];
 				bullets_.removeAt(k);
 				if (monsters[j]->getHP()==0){
 					delete monsters[j];
 					monsters.removeAt(j);
 				}
+				return;
 			}
 	}
   QString str_l = QString::number(lives);
@@ -180,12 +186,12 @@ void MainWindow::speedUp(){
 void MainWindow::createMonster(){
 	int i = rand()%4;
 	if (i==0){
-		Mummy *m = new Mummy(mummy_, 500, rand()%200, -2, 0);
+		Mummy *m = new Mummy(mummy_, 460, rand()%140, -2, 0);
 		gamePlay->addItem(m);
 		monsters.push_back(m);
 	}
 	else if (i==1){
-		Zombie *z = new Zombie(zombie_, rand()%500, rand()%200, 4*(rand()%2)-2, 4*(rand()%2)-2);
+		Zombie *z = new Zombie(zombie_, rand()%460, rand()%140, 4*(rand()%2)-2, 4*(rand()%2)-2);
 		gamePlay->addItem(z);
 		monsters.push_back(z);
 	}
@@ -204,21 +210,21 @@ void MainWindow::createMonster(){
 	}
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *e){
+void MainWindow::keyPressEvent1(QKeyEvent *e){
 	cout<<"captured."<<endl;
 	switch(e->key()){
-		case Qt::Key_Left:
+		case Qt::Key_J:
 			cout<<"Key presses."<<endl;
-			p1->move(1000,1000,1);
+			p1->move(500,200,1);
 			break;
-		case Qt::Key_Right:
-			p1->move(1000,1000,3);
+		case Qt::Key_L:
+			p1->move(500,200,2);
 			break;
-		case Qt::Key_Up:
-			p1->move(1000,1000,2);
+		case Qt::Key_I:
+			p1->move(500,200,3);
 			break;
-		case Qt::Key_Down:
-			p1->move(1000,1000,4);
+		case Qt::Key_K:
+			p1->move(500,200,4);
 			break;
 		case Qt::Key_A:
 			cout<<"Key presses."<<endl;
@@ -239,22 +245,22 @@ void MainWindow::keyPressEvent(QKeyEvent *e){
 
 void MainWindow::createBullet(int d){
 	if (d==1){
-		Bullet *b = new Bullet(bullet_, p1->getX()-70, p1->getY(), -7, 0);
+		Bullet *b = new Bullet(bullet_, p1->getX()-30, p1->getY(), -7, 0);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
 	else if (d == 2){
-		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()-70, 0, -7);
+		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()-30, 0, -7);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
 	else if (d == 3){
-		Bullet *b = new Bullet(bullet_, p1->getX()+70, p1->getY(), 7, 0);
+		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()+30, 0, 7);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 
 	else if (d == 4){
-		Bullet *b = new Bullet(bullet_, p1->getX(), p1->getY()+70, 0, 7);
+		Bullet *b = new Bullet(bullet_, p1->getX()+30, p1->getY(), 7, 0);
 		gamePlay->addItem(b);
 		bullets_.push_back(b);
 	} 

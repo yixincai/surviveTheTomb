@@ -8,19 +8,19 @@ void Player::move(int MaxX, int MaxY){
 }
 
 void Player::move(int MaxX, int MaxY, int dir){
-	if (x<0 || x+30>MaxX || y<MaxY || y+30>MaxY)
+	if ((x-20<0&&dir==1) || (x+20>MaxX-30&&dir==2) || (y-20<0&&dir==3) || (y+20>MaxY-30&&dir == 4))
 		return;
 	if (dir == 1){
-    		x -= 4;
+    		x -= 20;
     	}
     	else if (dir == 2){
-    		y -= 4;
+    		x += 20;
     	}
     	else if (dir ==3){
-    		x += 4;
+    		y -= 20;
     	}
     	else if (dir == 4){
-    		y -= 4;
+    		y += 20;
     	}
     
     setPos( x,y );
