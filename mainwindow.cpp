@@ -18,9 +18,6 @@ using namespace std;
  */
 MainWindow::MainWindow() {
 
-    lives = 3;
-    score=0;
-    
     /** load pictures */
     QPixmap a("gun.jpg"), b("bullet.jpg"), c("mummy_1.jpg"), d("gravestone.jpg"), e("zombie.jpg"), f("toxic_gas_cloud.jpg");
     player_ = new QPixmap(a.scaled(30,30));
@@ -28,7 +25,7 @@ MainWindow::MainWindow() {
     zombie_ = new QPixmap(e.scaled(40,60));
     toxic_ = new QPixmap(f.scaled(30,30));
     grave_ = new QPixmap(d.scaled(50,50));
-    bullet_ = new QPixmap(b.scaled(20,20));
+    bullet_ = new QPixmap(b.scaled(20,10));
     
     mainView_ = new QGridLayout();
     
@@ -80,6 +77,8 @@ MainWindow::MainWindow() {
     timer_speed = new QTimer(this);
     timer_speed->setInterval(10000);
     connect(timer_speed, SIGNAL(timeout()), this, SLOT(speedUp()));
+    p1 = new Player(player_,-100, -100 ,0,0);
+    gamePlay->addItem(p1);
 }
     
 
@@ -96,17 +95,27 @@ void MainWindow::startGame(){
   /** Check if the user input is empty */
 
   if(user_->text().isEmpty() ){
-    error_->setText("Empty input.");
+    error_->setText("Please enter user name.");
     return;
   }
+  lives = 3;
+  score = 0;
   QString str_l = QString::number(lives);
   QString str_s = QString::number(score);
   name_->setText(user_->text());
   score_->setText(str_s);
   lives_->setText(str_l);
-
-  p1 = new Player(player_,50, 50 ,0,0);
-  gamePlay->addItem(p1);
+  p1 ->setPos(50,50);
+  p1 ->setY(50);
+  p1 ->setX(50); 
+  for (int j=0;j<monsters.size();j++){
+  	delete monsters[j];
+  }
+  monsters.clear();
+  for (int k=0;k<bullets_.size();k++){
+  	delete bullets_[k];
+  }
+  bullets_.clear();
   timer_monster->start();
   timer_move->start();       
   timer_speed->start();
@@ -212,6 +221,8 @@ void MainWindow::createMonster(){
 }
 
 void MainWindow::keyPressEvent1(QKeyEvent *e){
+	if (!timer_monster->isActive())
+		return;
 	switch(e->key()){
 		case Qt::Key_J:
 			p1->move(500,200,1);
