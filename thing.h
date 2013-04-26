@@ -23,16 +23,25 @@ public:
     int getY();
     int getVelocityX();
     int getVelocityY();
+    /** move function to be implemented by subclasses*/
     virtual void move(int x, int y) = 0;
+    /** lose HP for each subcalss */
     virtual void loseHP() = 0;
+    /** change moving direction for sub items */
     virtual void changeDir() = 0;
     int getHP();
 protected:
+    /** x coordinate of the item */
     int x;
+    /** y coordinate of the item */
     int y;
+    /** horizontal speed of the item */
     int velocityX;
+    /** vertical speed of the item */
     int velocityY;
+    /** picture on the item */
     QPixmap* pic;
+    /** HP of the item */
     int hp;
 };
 

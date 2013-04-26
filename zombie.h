@@ -3,10 +3,7 @@
 #include "thing.h"
 
 /**
-  This class maintains the location, size, and speed of a QGraphicsPixmapItem.
-  It is easier to do the arithmetic with this data, and then update the position
-  separately, then to extract coordinates from the QRectF that is contained within
-  the QGraphicsRectItem
+  This class maintains the location, size, and speed of a Zombie.
   */
 class Zombie : public Thing {
 public:

@@ -1,10 +1,11 @@
 #include "toxic_gas_cloud.h"
 
+/** constructor */
 ToxicGasCloud::ToxicGasCloud(QPixmap *pm, int x, int y, int vx, int vy) : Thing(pm, x, y, vx, vy ) {
 	hp=100;
 
 }
-
+/** move the gas loud with in the scene */
 void ToxicGasCloud::move(int MaxX, int MaxY){
     y += velocityY;  
     x += velocityX;
@@ -30,10 +31,11 @@ void ToxicGasCloud::move(int MaxX, int MaxY){
     setPos( x,y );
 }
 
+/** lose HP which actually does nothing */
 void ToxicGasCloud::loseHP(){
 
 }
-
+/** change the direction of the gas */
 void ToxicGasCloud::changeDir(){
 	velocityX = -velocityX;
 	velocityY = -velocityY;
