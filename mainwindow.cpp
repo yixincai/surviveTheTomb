@@ -33,7 +33,7 @@ MainWindow::MainWindow() {
     	}
     }
     /** load pictures */
-    QPixmap a("gun.jpg"), b("bullet.jpg"), c("mummy_1.jpg"), d("gravestone.jpg"), e("zombie.jpg"), f("toxic_gas_cloud.jpg");
+    QPixmap a("gun.png"), b("bullet.png"), c("mummy_1.png"), d("gravestone.png"), e("zombie.png"), f("toxic_gas_cloud.png");
     player_ = new QPixmap(a.scaled(30,30));
     mummy_ = new QPixmap(c.scaled(40,60));
     zombie_ = new QPixmap(e.scaled(40,60));
