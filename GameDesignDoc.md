@@ -10,21 +10,21 @@ The player will need to survive from hitting the monsters and gain points from k
 ### Things
 Things that appear on the screen:
   1. Player: move in eight directions (up, down, right, left, up-right, up-left, down-right, down-left)
-  2. [Mummies](mummy_1.jpg): 1HP, appear from the edge of the scene, and move horizontally with medium speed.
+  2. [Mummies](mummy_1.png): 1HP, appear from the edge of the scene, and move horizontally in level 1 or follow the player in level 2 and 3, with medium speed.
   
-  ![alt text](mummy_1.jpg "mummy")
-  3. [Zombies](zombie.jpg): 3HP, appear from the edge of the scene, and move randomly with high speed.
+  ![alt text](mummy_1.png "mummy")
+  3. [Zombies](zombie.png): 3HP, appear from the edge of the scene, and follow the player with high speed in level 2 and 3.
   
-  ![alt text](zombie.jpg "zombie")
-  4. [Gravestones](gravestone.jpg): 5HP, appear randomly on the scene and move horizontally with low speed.
+  ![alt text](zombie.png "zombie")
+  4. [Gravestones](gravestone.png): 5HP, appear randomly on the scene and move horizontally with low speed in all levels.
   
-  ![alt text](gravestone.jpg "gravestone")
-  5. [Toxic gas cloud](toxic_gas_cloud.jpg): Invincible, emitted by zombies, mummies, graves and themselves and move randomly.
+  ![alt text](gravestone.png "gravestone")
+  5. [Toxic gas cloud](toxic_gas_cloud.png): Invincible, emitted by zombies, mummies, graves and themselves and move randomly in level 3.
   
-  ![alt text](toxic_gas_cloud.jpg "toxic gas")
-  6. [Bullets](bullet.jpg): Emitted by the player and move only horizontally or vertically.
+  ![alt text](toxic_gas_cloud.png "toxic gas")
+  6. [Bullets](bullet.png): Emitted by the player and move only horizontally or vertically.
   
-  ![alt text](bullet.jpg  "bullet")
+  ![alt text](bullet.png  "bullet")
 
 ### Player control
 
