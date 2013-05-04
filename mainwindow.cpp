@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QBrush>
 #include <iostream>
+#include <fstream>
 using namespace std;
 /** Default constructor.
  * Organize the Layout of the MainWindow
@@ -17,7 +18,20 @@ using namespace std;
  * @author Yixin Cai
  */
 MainWindow::MainWindow() {
-
+    ifstream fin;
+    fin.open("score.txt");
+    string users;
+    int scores;
+    if (!fin.fail()){
+    	fin>>users;
+    	fin>>scores;
+    	while (!fin.eof()){
+    		formerUser.push_back(users);
+    		formerScore.push_back(scores);
+    		fin>>users;
+    		fin>>scores;
+    	}
+    }
     /** load pictures */
     QPixmap a("gun.jpg"), b("bullet.jpg"), c("mummy_1.jpg"), d("gravestone.jpg"), e("zombie.jpg"), f("toxic_gas_cloud.jpg");
     player_ = new QPixmap(a.scaled(30,30));
@@ -42,6 +56,7 @@ MainWindow::MainWindow() {
     connect (pause_, SIGNAL(clicked()), this, SLOT(pauseGame()));
     name_ = new QLineEdit();
     score_ = new QLineEdit();
+    highScore = new QLineEdit();
     lives_ = new QLineEdit();
     error_ = new QMessageBox();
     error_->setText("Enter your name and press start.\nDo not click on OK button.");
@@ -51,6 +66,7 @@ MainWindow::MainWindow() {
     menu_->addRow(pause_);
     menu_->addRow(quit_);
     menu_->addRow("Player: ", name_);
+    menu_->addRow("High Score: ", highScore);
     menu_->addRow("Score: ", score_);
     menu_->addRow("Lives: ", lives_);
     menu_->addRow(error_);
@@ -71,7 +87,7 @@ MainWindow::MainWindow() {
   
     /** timer to create monsters */
     timer_monster = new QTimer(this);
-    timer_monster->setInterval(2000);
+    timer_monster->setInterval(1000);
     connect(timer_monster, SIGNAL(timeout()), this, SLOT(createMonster()));
     /** timer to move things */
     timer_move = new QTimer(this);
@@ -85,22 +101,21 @@ MainWindow::MainWindow() {
     p1 = new Player(player_,-100, -100 ,0,0);
     gamePlay->addItem(p1);
     lives = 0;
+    level = 1;
 }
     
 
 /** Create the game.  */
 void MainWindow::startGame(){
-  /** check if the game is still on. */
-  if (lives!=0){
-  	error_->setText("You still have lives!");
-  	return;
-  }
   /** Check if the user input is empty */
   if(user_->text().isEmpty() ){
     error_->setText("Please enter user name.");
     return;
   }
   error_->setText("Click the view.\nPress I, J, K and L to move.\nPress A, S, D and W to shoot.");
+  level = 1;
+  QBrush whiteBrush(Qt::white);
+  view->setBackgroundBrush( whiteBrush );
   lives = 10;
   score = 0;
   QString str_l = QString::number(lives);
@@ -116,10 +131,30 @@ void MainWindow::startGame(){
   	delete monsters[j];
   }
   monsters.clear();
+  for (int k=0;k<gas_.size();k++){
+  	delete gas_[k];
+  }
+  gas_.clear();
+  for (int k=0;k<gss_.size();k++){
+  	delete gss_[k];
+  }
+  gss_.clear();
   for (int k=0;k<bullets_.size();k++){
   	delete bullets_[k];
   }
   bullets_.clear();
+      	unsigned int i=0;
+	for (;i<formerUser.size();i++){
+		if (name_->text().toStdString()==formerUser[i]){
+			QString str_l = QString::number(formerScore[i]);
+			highScore->setText(str_l);
+			break;
+		}
+	}
+	if (i==formerUser.size()){
+		QString str_l = QString::number(0);
+		highScore->setText(str_l);
+	}
   /** start the timers */
   timer_monster->start();
   timer_move->start();       
@@ -133,15 +168,17 @@ void MainWindow::show() {
 
 /** Move the monsters and bullets.
   */
-void MainWindow::move(){	
+void MainWindow::move(){
 	for (int j=0;j<monsters.size();j++){
-		/** delete the monsters outside of the scene */
-		if (monsters[j]->getX()<-60||monsters[j]->getY()<-60){
-			delete monsters[j];
-			monsters.removeAt(j);
-			continue;
-		}
 		/** move monsters */
+		if (monsters[j]->getX()>p1->getX())
+			monsters[j]->setVelocityX(-1*abs(monsters[j]->getVelocityX()));
+		else
+			monsters[j]->setVelocityX(abs(monsters[j]->getVelocityX()));
+		if (monsters[j]->getY()>p1->getY())
+			monsters[j]->setVelocityY(-1*abs(monsters[j]->getVelocityY()));
+		else
+			monsters[j]->setVelocityY(abs(monsters[j]->getVelocityY()));
 		monsters[j]->move(500,200);
 		/** monster hits the player */
 		if (monsters[j]->collidesWithItem(p1)){
@@ -150,10 +187,51 @@ void MainWindow::move(){
 				timer_monster->stop();
   				timer_move->stop();       
   				timer_speed->stop();
-  				error_->setText("You lost the game!");			
+  				error_->setText("You lost the game!");
+  				saveScore();		
 			}	
 			delete monsters[j];
 			monsters.removeAt(j);
+		}
+	}
+	for (int j=0;j<gas_.size();j++){
+		/** move monsters */
+		gas_[j]->move(500,200);
+		/** monster hits the player */
+		if (gas_[j]->collidesWithItem(p1)){
+			lives--;
+			if (lives == 0){
+				timer_monster->stop();
+  				timer_move->stop();       
+  				timer_speed->stop();
+  				error_->setText("You lost the game!");
+  				saveScore();		
+			}	
+			delete gas_[j];
+			gas_.removeAt(j);
+		}
+	}
+	for (int j=0;j<gss_.size();j++){
+		/** delete the monsters outside of the scene */
+		if (gss_[j]->getX()<-60||gss_[j]->getY()<-60){
+			delete gss_[j];
+			gss_.removeAt(j);
+			continue;
+		}
+		/** move monsters */
+		gss_[j]->move(500,200);
+		/** monster hits the player */
+		if (gss_[j]->collidesWithItem(p1)){
+			lives--;
+			if (lives == 0){
+				timer_monster->stop();
+  				timer_move->stop();       
+  				timer_speed->stop();
+  				error_->setText("You lost the game!");
+  				saveScore();		
+			}	
+			delete gss_[j];
+			gss_.removeAt(j);
 		}
 	}
 	for (int k=0;k<bullets_.size();k++){
@@ -175,19 +253,121 @@ void MainWindow::move(){
 					delete monsters[j];
 					monsters.removeAt(j);
 				}
+				if (score == 50 || score == 200){
+					timer_monster->stop();
+    					timer_move->stop();       
+    					timer_speed->stop();
+					newLevel();
+				}
+				return;
+			}
+		for (int j=0;j<gss_.size();j++)
+			if (gss_[j]->collidesWithItem(bullets_[k])){
+				gss_[j]->loseHP();
+				score++;
+				delete bullets_[k];
+				bullets_.removeAt(k);
+				if (gss_[j]->getHP()==0){
+					delete gss_[j];
+					gss_.removeAt(j);
+				}
+				if (score == 50 || score == 200){
+					timer_monster->stop();
+    					timer_move->stop();       
+    					timer_speed->stop();
+					newLevel();
+				}
+				return;
+			}
+		for (int j=0;j<gas_.size();j++)
+			if (gas_[j]->collidesWithItem(bullets_[k])){
+				gas_[j]->loseHP();
+				score++;
+				delete bullets_[k];
+				bullets_.removeAt(k);
+				if (score == 50 || score == 200){
+					timer_monster->stop();
+    					timer_move->stop();       
+    					timer_speed->stop();
+					newLevel();
+				}
 				return;
 			}
 	}
-//	for (int j=0;j<monsters.size();j++)
-//		for (int k=j+1;k<monsters.size();k++)
-//			if (monsters[j]->collidesWithItem(monsters[k])){
-//				monsters[j]->changeDir();
-//				monsters[k]->changeDir();
-//			}
   QString str_l = QString::number(lives);
   QString str_s = QString::number(score);
   score_->setText(str_s);
   lives_->setText(str_l);
+
+}
+
+void MainWindow::newLevel(){
+  QString str_l = QString::number(lives);
+  QString str_s = QString::number(score);
+  score_->setText(str_s);
+  lives_->setText(str_l);
+
+  level++;
+  if (level == 2){
+  	timer_monster->setInterval(500);
+  	QBrush blueBrush(Qt::blue);
+  	view->setBackgroundBrush( blueBrush );
+  }
+  else if (level == 3){
+  	timer_monster->setInterval(250);
+  	QBrush redBrush(Qt::red);
+  	view->setBackgroundBrush( redBrush );  
+  }
+  p1 ->setPos(50,50);
+  p1 ->setY(50);
+  p1 ->setX(50); 
+  /** clear the former game */
+  for (int j=0;j<monsters.size();j++){
+  	delete monsters[j];
+  }
+  monsters.clear();
+  for (int k=0;k<gas_.size();k++){
+  	delete gas_[k];
+  }
+  gas_.clear();
+    for (int k=0;k<gss_.size();k++){
+  	delete gss_[k];
+  }
+  gss_.clear();
+  for (int k=0;k<bullets_.size();k++){
+  	delete bullets_[k];
+  }
+  bullets_.clear();
+  /** start the timers */
+  timer_monster->start();
+  timer_move->start();       
+  timer_speed->start();
+
+}
+
+void MainWindow::saveScore(){
+	QString str_l = QString::number(lives);
+  	QString str_s = QString::number(score);
+  	score_->setText(str_s);
+  	lives_->setText(str_l);
+    	ofstream fout;
+    	unsigned int i=0;
+	for (;i<formerUser.size();i++){
+		if (name_->text().toStdString()==formerUser[i]){
+			if (score>formerScore[i])
+				formerScore[i]=score;
+			break;
+		}
+	}
+	if (i==formerUser.size()){
+		formerUser.push_back(name_->text().toStdString());
+		formerScore.push_back(score);
+	}
+	fout.open("score.txt");
+	for (unsigned int j=0; j<formerUser.size();j++){
+		fout<<formerUser[j]<<endl;
+		fout<<formerScore[j]<<endl;
+	}
 }
 
 /** pause the game by stopping the timers */
@@ -214,36 +394,89 @@ void MainWindow::speedUp(){
 		monsters[i]->setVelocityX(2*monsters[i]->getVelocityX());
 		monsters[i]->setVelocityY(2*monsters[i]->getVelocityY());
 	}
+	for (int i=0;i<gas_.size();i++){
+		gas_[i]->setVelocityX(2*gas_[i]->getVelocityX());
+		gas_[i]->setVelocityY(2*gas_[i]->getVelocityY());
+	}
+	for (int i=0;i<gss_.size();i++){
+		gss_[i]->setVelocityX(2*gss_[i]->getVelocityX());
+		gss_[i]->setVelocityY(2*gss_[i]->getVelocityY());
+	}
 }
 
 /** randomly create one of the four monsters */
 void MainWindow::createMonster(){
-	int i = rand()%4;
+	if (level==1){
+		createMonster1();
+	}
+	else if (level==2){
+		createMonster2();
+	}
+	else if (level==3){
+		createMonster3();
+	}
+}
+
+void MainWindow::createMonster1(){
+	int i = rand()%2;
 	if (i==0){
-		Mummy *m = new Mummy(mummy_, 460, rand()%140, -2, 0);
+		Mummy *m = new Mummy(mummy_, 460, rand()%140, -5, 0);
 		gamePlay->addItem(m);
 		monsters.push_back(m);
 	}
 	else if (i==1){
-		Zombie *z = new Zombie(zombie_, rand()%460, rand()%140, 4*(rand()%2)-2, 4*(rand()%2)-2);
+		Gravestone *g = new Gravestone(grave_, 300+rand()%150, rand()%150, -3, 0);
+		gamePlay->addItem(g);
+		gss_.push_back(g);
+	}
+}
+
+/** randomly create one of the four monsters */
+void MainWindow::createMonster2(){
+	int i = rand()%3;
+	if (i==0){
+		Mummy *m = new Mummy(mummy_, 460, rand()%140, -8, 6*(rand()%2)-3);
+		gamePlay->addItem(m);
+		monsters.push_back(m);
+	}
+	else if (i==1){
+		Zombie *z = new Zombie(zombie_, 200+rand()%260, rand()%140, 10*(rand()%2)-5, 10*(rand()%2)-5);
 		gamePlay->addItem(z);
 		monsters.push_back(z);
 	}
 	else if (i==2){
-		Gravestone *g = new Gravestone(grave_, rand()%450, rand()%150, -1, 0);
+		Gravestone *g = new Gravestone(grave_, 200+rand()%250, rand()%150, -5, 0);
 		gamePlay->addItem(g);
-		monsters.push_back(g);
+		gss_.push_back(g);
+	}
+}
+
+void MainWindow::createMonster3(){
+	int i = rand()%4;
+	if (i==0){
+		Mummy *m = new Mummy(mummy_, 460, rand()%140, -14, 10*(rand()%2)-5);
+		gamePlay->addItem(m);
+		monsters.push_back(m);
+	}
+	else if (i==1){
+		Zombie *z = new Zombie(zombie_, 200+rand()%260, rand()%140, 14*(rand()%2)-7, 14*(rand()%2)-7);
+		gamePlay->addItem(z);
+		monsters.push_back(z);
+	}
+	else if (i==2){
+		Gravestone *g = new Gravestone(grave_, 200+rand()%250, rand()%150, -10, 0);
+		gamePlay->addItem(g);
+		gss_.push_back(g);
 	}
 	else if (i==3){
 		if (monsters.size()==0)
 			return;
 		int p = rand()%monsters.size();
-		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX(), monsters[p]->getY(), 6*(rand()%2)-3, 6*(rand()%2)-3);
+		ToxicGasCloud *t = new ToxicGasCloud(toxic_, monsters[p]->getX(), monsters[p]->getY(), 18*(rand()%2)-9, 18*(rand()%2)-9);
 		gamePlay->addItem(t);
-		monsters.push_back(t);
+		gas_.push_back(t);
 	}
 }
-
 /** captuer key presses and move user or shoot bullet */
 void MainWindow::keyPressEvent1(QKeyEvent *e){
 	if (!timer_monster->isActive())

@@ -38,6 +38,7 @@
 #define WindowMaxX 1000
 #define WindowMaxY 1000
 
+using namespace std;
 /**
  * A class to display and allow the user to play the game.
 
@@ -78,6 +79,7 @@ private:
     
     /** A box to show the user name */
     QLineEdit* name_;
+    QLineEdit* highScore;
     /** A box to show the score */ 
     QLineEdit* score_;
     /** A box to show the remaining lives */
@@ -98,6 +100,8 @@ private:
 
     /** A list of all the monsters */
     QList<Thing*> monsters;
+    QList<ToxicGasCloud*> gas_;
+    QList<Gravestone*> gss_;
     /** A list of all bullets */
     QList<Bullet*> bullets_;
     /** The player */
@@ -113,6 +117,10 @@ private:
     int lives;
     /** score of the user */
     int score;
+    int level;
+    
+    vector<string> formerUser;
+    vector<int> formerScore;
 
 public slots:
     /** Clear the scene and create a new game */
@@ -122,12 +130,16 @@ public slots:
     /** Create the bullets */
     void createBullet(int d);
     /** Create the monsters */
+    void createMonster1();
+    void createMonster2();
+    void createMonster3();
     void createMonster();
     /** speed up everything in the scene */
     void speedUp();
     /** move everything */
     void move();
-
+    void saveScore();
+    void newLevel();
 public:
     /** Capture the movement of the key from the view */
     void keyPressEvent1(QKeyEvent *e);
