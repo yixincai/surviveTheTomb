@@ -5,7 +5,8 @@ This is a place holder for the game design document of Yixin Cai.
 
 ## Game Description
 This is an advanture game.
-The player will need to survive from hitting the monsters and gain points from killing them. 
+The player will need to survive from hitting the monsters and gain points from killing them.
+There are three levels.
 
 ### Things
 Things that appear on the screen:
@@ -34,6 +35,7 @@ Things that appear on the screen:
   
 #### Mouse
   click start, pause, quit buttons
+  click the view before pressing keys to move the player
 
 ### Points
 Player starta with 0 points.

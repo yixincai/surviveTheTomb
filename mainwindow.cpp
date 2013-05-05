@@ -195,9 +195,9 @@ void MainWindow::move(){
 		}
 	}
 	for (int j=0;j<gas_.size();j++){
-		/** move monsters */
+		/** move gas */
 		gas_[j]->move(500,200);
-		/** monster hits the player */
+		/** gas hits the player */
 		if (gas_[j]->collidesWithItem(p1)){
 			lives--;
 			if (lives == 0){
@@ -212,15 +212,15 @@ void MainWindow::move(){
 		}
 	}
 	for (int j=0;j<gss_.size();j++){
-		/** delete the monsters outside of the scene */
+		/** delete the gravestones outside of the scene */
 		if (gss_[j]->getX()<-60||gss_[j]->getY()<-60){
 			delete gss_[j];
 			gss_.removeAt(j);
 			continue;
 		}
-		/** move monsters */
+		/** move graves */
 		gss_[j]->move(500,200);
-		/** monster hits the player */
+		/** grave hits the player */
 		if (gss_[j]->collidesWithItem(p1)){
 			lives--;
 			if (lives == 0){
@@ -345,6 +345,7 @@ void MainWindow::newLevel(){
 
 }
 
+/** save scores to a file called score.txt */
 void MainWindow::saveScore(){
 	QString str_l = QString::number(lives);
   	QString str_s = QString::number(score);
@@ -416,7 +417,7 @@ void MainWindow::createMonster(){
 		createMonster3();
 	}
 }
-
+/** monster frequency for level 1 */
 void MainWindow::createMonster1(){
 	int i = rand()%2;
 	if (i==0){
@@ -431,7 +432,7 @@ void MainWindow::createMonster1(){
 	}
 }
 
-/** randomly create one of the four monsters */
+/** monster frequency for level 2 */
 void MainWindow::createMonster2(){
 	int i = rand()%3;
 	if (i==0){
@@ -450,7 +451,7 @@ void MainWindow::createMonster2(){
 		gss_.push_back(g);
 	}
 }
-
+/** monster frequency for level 3 */
 void MainWindow::createMonster3(){
 	int i = rand()%4;
 	if (i==0){

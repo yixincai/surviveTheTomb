@@ -8,6 +8,7 @@
   + Game Name: Survive the Tomb
   + Game Description: This is an advanture game where players need to survive and kill monsters. 
   + [Game Design Doc](GameDesignDoc.md)
+  + Note: After pressing Start button, please use the mouse to click the game view before pressing keys to move the gun.
 
 
 ### Compile & Run Instructions

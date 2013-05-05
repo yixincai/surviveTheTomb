@@ -79,6 +79,7 @@ private:
     
     /** A box to show the user name */
     QLineEdit* name_;
+    /** A box to show the high score */
     QLineEdit* highScore;
     /** A box to show the score */ 
     QLineEdit* score_;
@@ -100,7 +101,9 @@ private:
 
     /** A list of all the monsters */
     QList<Thing*> monsters;
+    /** A list of all the gases */
     QList<ToxicGasCloud*> gas_;
+    /** A list of all the gravestones */
     QList<Gravestone*> gss_;
     /** A list of all bullets */
     QList<Bullet*> bullets_;
@@ -117,9 +120,11 @@ private:
     int lives;
     /** score of the user */
     int score;
+    /** level the user is in */
     int level;
-    
+    /** A list of user names who played the game before */
     vector<string> formerUser;
+    /** A list of former high scores */
     vector<int> formerScore;
 
 public slots:
@@ -129,16 +134,21 @@ public slots:
     void pauseGame();
     /** Create the bullets */
     void createBullet(int d);
-    /** Create the monsters */
+    /** Create the monsters for level 1 */
     void createMonster1();
+    /** Create the monsters for level 2 */
     void createMonster2();
+    /** Create the monsters for level 3 */
     void createMonster3();
+    /** Create the monsters */
     void createMonster();
     /** speed up everything in the scene */
     void speedUp();
     /** move everything */
     void move();
+    /** save scores to a file called score.txt */
     void saveScore();
+    /** clear the screen for new level */
     void newLevel();
 public:
     /** Capture the movement of the key from the view */
